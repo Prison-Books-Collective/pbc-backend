@@ -1,0 +1,88 @@
+package com.prisonbooks.PrisonBooksCollective.controller;
+
+import com.prisonbooks.PrisonBooksCollective.model.Book;
+import com.prisonbooks.PrisonBooksCollective.model.Inmate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+import java.util.Optional;
+
+@CrossOrigin
+@RestController
+public class BookController {
+
+    @Autowired
+    BookRepository bookRepository;
+
+    public BookController(@Autowired BookRepository bookRepository){
+        this.bookRepository = bookRepository;
+    }
+
+    @PostMapping(path="/addBook")
+    public ResponseEntity<Book> addNewBook(@RequestBody Book book){
+        if (!getBookIsbn10(book.getIsbn10()).hasBody() && !getBookIsbn13(book.getIsbn13()).hasBody()){
+            Book bookSaved = bookRepository.save(book);
+            return ResponseEntity.ok(bookSaved);
+        }
+        return new ResponseEntity(null, HttpStatus.FOUND);
+    }
+
+    @GetMapping(path="/getIsbn13StartsWith")
+    public ResponseEntity<List<Book>> getBookIsbn13StartsWith(@RequestParam String startsWith){
+        List<Book> books = bookRepository.findByIsbn13StartsWith(startsWith);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping(path="/getIsbn10StartsWith")
+    public ResponseEntity<List<Book>> getBookIsbn10StartsWith(@RequestParam String startsWith){
+        List<Book> books = bookRepository.findByIsbn10StartsWith(startsWith);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping(path="/getIsbn10")
+    public ResponseEntity<Book> getBookIsbn10(@RequestParam String isbn10){
+        Optional<Book> bookResult = bookRepository.findByIsbn10(isbn10);
+        if(bookResult.isPresent()){
+            return ResponseEntity.ok(bookResult.get());
+        }
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path="/getIsbn13")
+    public ResponseEntity<Book> getBookIsbn13(@RequestParam String isbn13){
+        Optional<Book> bookResult = bookRepository.findByIsbn13(isbn13);
+        if(bookResult.isPresent()){
+            return ResponseEntity.ok(bookResult.get());
+        }
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping(path = "/deleteBook")
+    public  HttpStatus deleteBook(@RequestParam long id){
+        if (bookRepository.existsById(id)){
+            bookRepository.deleteById(id);
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.NO_CONTENT;
+        }
+    }
+
+    @PutMapping(path = "/updateIsbn13")
+    public ResponseEntity<Book> updateIsbn13(@RequestParam long id, @RequestParam String isbn13){
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isPresent()){
+            Book book = bookOptional.get();
+            book.setIsbn13(isbn13);
+            Book savedBook = bookRepository.save(book);
+            return  ResponseEntity.ok(savedBook);
+        } else {
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        }
+    }
+}
