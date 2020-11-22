@@ -19,6 +19,9 @@ public class Package {
     @ManyToMany(cascade=CascadeType.ALL)
     private List<Zine> zines;
 
+    @ManyToMany(cascade=CascadeType.ALL)
+    private List<Resource> resources;
+
     @Temporal(TemporalType.DATE)
     @CreationTimestamp
     @Column(name = "date")
@@ -55,5 +58,13 @@ public class Package {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<Resource> resources) {
+        this.resources = resources;
     }
 }

@@ -85,4 +85,21 @@ public class BookController {
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         }
     }
+
+    @PutMapping(path = "/updateBook")
+    public ResponseEntity<Book> updateBook(@RequestBody Book book){
+        Book savedBook;
+        Book originalBook;
+        if (book.getIsbn10().substring(0,2).equals("NO")){
+            Optional<Book> byIsbn13 = bookRepository.findByIsbn13(book.getIsbn13());
+            originalBook = byIsbn13.get();
+        }else{
+            Optional<Book> byIsbn10 = bookRepository.findByIsbn10(book.getIsbn10());
+            originalBook = byIsbn10.get();
+        }
+        originalBook.setAuthors(book.getAuthors());
+        originalBook.setTitle(book.getTitle());
+        savedBook = bookRepository.save(originalBook);
+        return  ResponseEntity.ok(savedBook);
+    }
 }
