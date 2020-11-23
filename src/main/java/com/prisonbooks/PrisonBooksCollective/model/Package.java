@@ -13,13 +13,13 @@ public class Package {
     @GeneratedValue
     private long id;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany
     private List<Book> books;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany
     private List<Zine> zines;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany
     private List<Resource> resources;
 
     @Temporal(TemporalType.DATE)

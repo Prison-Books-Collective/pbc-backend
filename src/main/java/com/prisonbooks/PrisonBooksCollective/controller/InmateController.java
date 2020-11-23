@@ -1,5 +1,6 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
+import com.prisonbooks.PrisonBooksCollective.model.Book;
 import com.prisonbooks.PrisonBooksCollective.model.Inmate;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,9 +24,9 @@ public class InmateController {
         this.inmateRepository = inmateRepository;
     }
 
-    @PostMapping(path="/add")
+    @PostMapping(path="/addInmate")
     public
-    ResponseEntity<Inmate> addNewInmate(@RequestParam String firstName, @RequestParam String lastName, @RequestParam long id){
+    ResponseEntity<Inmate> addNewInmate(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String id){
         Inmate inmate = new Inmate();
         inmate.setId(id);
         inmate.setFirstName(firstName);
@@ -33,8 +36,8 @@ public class InmateController {
         return ResponseEntity.ok(inmate);
     }
 
-    @GetMapping(path="/get")
-    public ResponseEntity<Inmate> getInmate(@RequestParam long id){
+    @GetMapping(path="/getInmate")
+    public ResponseEntity<Inmate> getInmate(@RequestParam String id){
         Optional<Inmate> inmate = inmateRepository.findById(id);
         if (inmate.isPresent()){
             return ResponseEntity.ok(inmate.get());
@@ -43,7 +46,7 @@ public class InmateController {
     }
 
     @GetMapping(path="/getPackages")
-    public ResponseEntity<List<Package>> getPackagesForInmate(@RequestParam long id){
+    public ResponseEntity<List<Package>> getPackagesForInmate(@RequestParam String id){
         ResponseEntity<Inmate> inmateEntity = getInmate(id);
         if(inmateEntity.hasBody()){
             Inmate inmate = inmateEntity.getBody();
@@ -52,8 +55,33 @@ public class InmateController {
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping(path = "/updateInmate")
+    public ResponseEntity<Inmate> updateInmate(@RequestParam String originalId, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String id){
+        Optional<Inmate> originalInmate = inmateRepository.findById(originalId);
+        if (originalInmate.isPresent()){
+            Inmate inmate = originalInmate.get();
+            inmate.setFirstName(firstName);
+            inmate.setLastName(lastName);
+            if (!id.equals(originalId)){
+                Inmate toClear = originalInmate.get();
+                List<Package> packages = List.copyOf(toClear.getPackages());
+                toClear.setPackages(new LinkedList<>());
+                inmateRepository.save(toClear);
+                inmateRepository.deleteById(originalId);
+                inmate.setId(id);
+                inmate.setPackages(packages);
+                Inmate save = inmateRepository.save(inmate);
+                return ResponseEntity.ok(save);
+            }
+
+            Inmate save = inmateRepository.save(inmate);
+            return ResponseEntity.ok(save);
+        }
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+
+    }
     @PostMapping(path="/addPackage")
-    public ResponseEntity<List<Package>> addPackageForInmate(@RequestParam long id, @RequestBody Package packageForInmate){
+    public ResponseEntity<List<Package>> addPackageForInmate(@RequestParam String id, @RequestBody Package packageForInmate){
         ResponseEntity<Inmate> inmateEntity = getInmate(id);
         if(inmateEntity.hasBody()){
             Inmate inmate = inmateEntity.getBody();
