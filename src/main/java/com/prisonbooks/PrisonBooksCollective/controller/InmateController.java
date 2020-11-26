@@ -81,7 +81,7 @@ public class InmateController {
 
     }
     @PostMapping(path="/addPackage")
-    public ResponseEntity<List<Package>> addPackageForInmate(@RequestParam String id, @RequestBody Package packageForInmate){
+    public ResponseEntity<Package> addPackageForInmate(@RequestParam String id, @RequestBody Package packageForInmate){
         ResponseEntity<Inmate> inmateEntity = getInmate(id);
         if(inmateEntity.hasBody()){
             Inmate inmate = inmateEntity.getBody();
@@ -89,7 +89,7 @@ public class InmateController {
             packages.add(packageForInmate);
             inmate.setPackages(packages);
             inmateRepository.save(inmate);
-            return ResponseEntity.ok(packages);
+            return ResponseEntity.ok(packageForInmate);
         }
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
     }
