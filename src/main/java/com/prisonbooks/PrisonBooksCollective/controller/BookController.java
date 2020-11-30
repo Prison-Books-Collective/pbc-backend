@@ -102,4 +102,10 @@ public class BookController {
         savedBook = bookRepository.save(originalBook);
         return  ResponseEntity.ok(savedBook);
     }
+
+    @GetMapping(path = "/getBooksTitleContaining")
+    public ResponseEntity<List<Book>> getBooksWithTitleContaining(@RequestParam String targetString){
+        List<Book> byTitleContaining = bookRepository.findByTitleContaining(targetString);
+        return ResponseEntity.ok(byTitleContaining);
+    }
 }

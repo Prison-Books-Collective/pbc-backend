@@ -15,4 +15,7 @@ public interface BookRepository extends CrudRepository<Book, Long> {
      List<Book> findByIsbn13StartsWith(String beginning);
 
      List<Book> findByIsbn10StartsWith(String beginning);
+
+     List<Book> findByTitleContaining(String target);
+
 }

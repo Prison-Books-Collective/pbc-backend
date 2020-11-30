@@ -3,6 +3,7 @@ package com.prisonbooks.PrisonBooksCollective.model;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -22,17 +23,15 @@ public class Package {
     @ManyToMany
     private List<Resource> resources;
 
-    @Temporal(TemporalType.DATE)
-    @CreationTimestamp
     @Column(name = "date")
-    private Date date;
+    private LocalDate date;
 
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
