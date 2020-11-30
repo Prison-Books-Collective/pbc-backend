@@ -1,5 +1,6 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
+import com.prisonbooks.PrisonBooksCollective.model.Resource;
 import com.prisonbooks.PrisonBooksCollective.model.Zine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,19 @@ public class ZineController {
         }else{
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         }
+    }
+
+
+    @PutMapping(path="/updateZine")
+    public ResponseEntity<Zine> updateResource(@RequestBody Zine zine) {
+        Optional<Zine> optional = zineRepository.findById(zine.getId());
+        if (optional.isPresent()) {
+            Zine actual = optional.get();
+            actual.setTitle(zine.getTitle());
+            actual.setThreeLetterCode(zine.getThreeLetterCode());
+            Zine save = zineRepository.save(actual);
+            return ResponseEntity.ok(save);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 }

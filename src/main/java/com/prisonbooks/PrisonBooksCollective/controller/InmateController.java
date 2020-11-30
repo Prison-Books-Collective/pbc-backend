@@ -1,6 +1,5 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
-import com.prisonbooks.PrisonBooksCollective.model.Book;
 import com.prisonbooks.PrisonBooksCollective.model.Inmate;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -92,5 +88,39 @@ public class InmateController {
             return ResponseEntity.ok(packageForInmate);
         }
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(path="/deletePackage")
+    public ResponseEntity<List<Package>> deletePackage(@RequestParam  String inmateId,  @RequestParam long packageId){
+        Optional<Inmate> optional = inmateRepository.findById(inmateId);
+        if (optional.isPresent()){
+            Inmate inmate = optional.get();
+            List<Package> packages =  inmate.getPackages();
+            for(int i = 0; i < packages.size(); i++){
+                if  (packages.get(i).getId() == packageId){
+                    packages.remove(i);
+                }
+            }
+            Inmate save = inmateRepository.save(inmate);
+            return ResponseEntity.ok(save.getPackages());
+        }
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(path="/updatePackage")
+    public ResponseEntity<List<Package>> updatePackage(@RequestParam  String inmateId,  @RequestBody Package packageItem) {
+        Optional<Inmate> optional = inmateRepository.findById(inmateId);
+        if (optional.isPresent()) {
+            Inmate inmate = optional.get();
+            List<Package> packages = inmate.getPackages();
+            for (int i = 0; i < packages.size(); i++) {
+                if (packages.get(i).getId() == packageItem.getId()) {
+                    packages.set(i, packageItem);
+                }
+            }
+            Inmate save = inmateRepository.save(inmate);
+            return ResponseEntity.ok(save.getPackages());
+        }
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 }

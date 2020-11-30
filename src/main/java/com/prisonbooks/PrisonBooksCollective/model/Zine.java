@@ -17,6 +17,13 @@ public class Zine {
     @Column(unique = true)
     private String threeLetterCode;
 
+    private boolean inUse;
+
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
+    }
+
+
     public String getTitle() {
         return title;
     }
@@ -39,5 +46,9 @@ public class Zine {
 
     public void setThreeLetterCode(String threeLetterCode) {
         this.threeLetterCode = threeLetterCode;
+    }
+
+    public boolean isInUse() {
+        return inUse;
     }
 }
