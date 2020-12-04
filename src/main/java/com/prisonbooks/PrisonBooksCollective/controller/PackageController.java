@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @CrossOrigin
@@ -24,9 +25,18 @@ public class PackageController {
     }
 
     @GetMapping(path="/getPackagesFromDate")
-    public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date){
+    public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
         LocalDate dateObj = LocalDate.parse(date);
         List<Package> byDate = packageRepository.findAllByDate(dateObj);
         return ResponseEntity.ok(byDate);
+    }
+
+    @GetMapping(path="/getAllPackages")
+    public ResponseEntity<List<Package>> getAllPackages() {
+        Iterable<Package> all = packageRepository.findAll();
+        List<Package> packages = new LinkedList<>();
+        all.forEach(packages::add);
+
+        return ResponseEntity.ok(packages);
     }
 }

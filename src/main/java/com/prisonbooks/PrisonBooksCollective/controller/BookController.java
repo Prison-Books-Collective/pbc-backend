@@ -86,6 +86,19 @@ public class BookController {
         }
     }
 
+    @PutMapping(path = "/updateIsbn10")
+    public ResponseEntity<Book> updateIsbn10(@RequestParam long id, @RequestParam String isbn10){
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isPresent()){
+            Book book = bookOptional.get();
+            book.setIsbn10(isbn10);
+            Book savedBook = bookRepository.save(book);
+            return  ResponseEntity.ok(savedBook);
+        } else {
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
     @PutMapping(path = "/updateBook")
     public ResponseEntity<Book> updateBook(@RequestBody Book book){
         Book savedBook;
@@ -103,9 +116,28 @@ public class BookController {
         return  ResponseEntity.ok(savedBook);
     }
 
+
     @GetMapping(path = "/getBooksTitleContaining")
     public ResponseEntity<List<Book>> getBooksWithTitleContaining(@RequestParam String targetString){
         List<Book> byTitleContaining = bookRepository.findByTitleContaining(targetString);
         return ResponseEntity.ok(byTitleContaining);
+    }
+
+    @GetMapping(path = "/getBooksIsbn10Containing")
+    public ResponseEntity<List<Book>> getBooksWithIsbn10Containing(@RequestParam String targetString){
+        List<Book> byIsbn10Containing = bookRepository.findByIsbn10Containing(targetString);
+        return ResponseEntity.ok(byIsbn10Containing);
+    }
+
+    @GetMapping(path = "/getBooksIsbn13Containing")
+    public ResponseEntity<List<Book>> getBooksWithIsbn13Containing(@RequestParam String targetString){
+        List<Book> byIsbn13Containing = bookRepository.findByIsbn13Containing(targetString);
+        return ResponseEntity.ok(byIsbn13Containing);
+    }
+
+    @GetMapping(path = "/getBooksTitle")
+    public ResponseEntity<List<Book>> getBooksWithTitle(@RequestParam String targetString){
+        List<Book> byTitle = bookRepository.findByTitle(targetString);
+        return ResponseEntity.ok(byTitle);
     }
 }
