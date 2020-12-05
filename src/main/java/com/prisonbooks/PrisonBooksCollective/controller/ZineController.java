@@ -1,12 +1,10 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
-import com.prisonbooks.PrisonBooksCollective.model.Resource;
 import com.prisonbooks.PrisonBooksCollective.model.Zine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.html.HTMLBRElement;
 
 import java.util.LinkedList;
 import java.util.List;

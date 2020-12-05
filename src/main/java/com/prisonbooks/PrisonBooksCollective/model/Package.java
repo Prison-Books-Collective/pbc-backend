@@ -1,10 +1,7 @@
 package com.prisonbooks.PrisonBooksCollective.model;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,7 +18,7 @@ public class Package {
     private List<Zine> zines;
 
     @ManyToMany
-    private List<Resource> resources;
+    private List<NoISBNBook> noISBNBooks;
 
     @Column(name = "date")
     private LocalDate date;
@@ -59,11 +56,11 @@ public class Package {
         this.id = id;
     }
 
-    public List<Resource> getResources() {
-        return resources;
+    public List<NoISBNBook> getNoISBNBooks() {
+        return noISBNBooks;
     }
 
-    public void setResources(List<Resource> resources) {
-        this.resources = resources;
+    public void setNoISBNBooks(List<NoISBNBook> noISBNBooks) {
+        this.noISBNBooks = noISBNBooks;
     }
 }

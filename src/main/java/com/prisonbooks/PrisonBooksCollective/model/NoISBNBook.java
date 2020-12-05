@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Resource {
+public class NoISBNBook {
 
     @Id
     @GeneratedValue
