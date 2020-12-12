@@ -1,6 +1,7 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
 import com.prisonbooks.PrisonBooksCollective.model.Book;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface BookRepository extends CrudRepository<Book, Long> {
 
      List<Book> findByIsbn13Containing(String target);
 
+     @Query("SELECT b FROM Book b join b.authors author WHERE author LIKE CONCAT('%', :target,  '%') ")
+     List<Book> findByAuthorContaining(String target);
 
      List<Book> findByTitle(String target);
 

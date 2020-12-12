@@ -31,6 +31,13 @@ public class PackageController {
         return ResponseEntity.ok(byDate);
     }
 
+    @GetMapping(path="/getPackageCountFromDate")
+    public ResponseEntity<Long> getPackageCountFromDate(@RequestParam String date) {
+        LocalDate dateObj = LocalDate.parse(date);
+        Long count = packageRepository.countByDate(dateObj);
+        return ResponseEntity.ok(count);
+    }
+
     @GetMapping(path="/getAllPackages")
     public ResponseEntity<List<Package>> getAllPackages() {
         Iterable<Package> all = packageRepository.findAll();
@@ -39,4 +46,6 @@ public class PackageController {
 
         return ResponseEntity.ok(packages);
     }
+
+
 }

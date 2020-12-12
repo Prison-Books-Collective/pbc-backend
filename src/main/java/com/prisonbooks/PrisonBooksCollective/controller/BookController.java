@@ -123,6 +123,12 @@ public class BookController {
         return ResponseEntity.ok(byTitleContaining);
     }
 
+    @GetMapping(path = "/getAuthorsContaining")
+    public ResponseEntity<List<Book>> getBooksWithAuthorsContaining(@RequestParam String targetString){
+        List<Book> byAuthorsContaining = bookRepository.findByAuthorContaining(targetString);
+        return ResponseEntity.ok(byAuthorsContaining);
+    }
+
     @GetMapping(path = "/getBooksIsbn10Containing")
     public ResponseEntity<List<Book>> getBooksWithIsbn10Containing(@RequestParam String targetString){
         List<Book> byIsbn10Containing = bookRepository.findByIsbn10Containing(targetString);
