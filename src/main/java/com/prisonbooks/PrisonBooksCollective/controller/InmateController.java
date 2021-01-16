@@ -78,9 +78,9 @@ public class InmateController {
 
     @PostMapping(path="/addPackage")
     public ResponseEntity<Package> addPackageForInmate(@RequestParam String id, @RequestBody Package packageForInmate){
-        ResponseEntity<Inmate> inmateEntity = getInmate(id);
-        if(inmateEntity.hasBody()){
-            Inmate inmate = inmateEntity.getBody();
+        Optional<Inmate> optional = inmateRepository.findById(id);
+        if(optional.isPresent()){
+            Inmate inmate = optional.get();
             List<Package> packages = inmate.getPackages();
             packages.add(packageForInmate);
             inmate.setPackages(packages);

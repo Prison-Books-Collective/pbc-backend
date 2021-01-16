@@ -34,10 +34,34 @@ public class InmateNoIDController {
     }
 
     @GetMapping(path="/getInmateNoID")
-    public ResponseEntity<List<InmateNoID>> getInmate(@RequestParam String firstName, @RequestParam String lastName){
+    public ResponseEntity<List<InmateNoID>> getInmateNoIDByName(@RequestParam String firstName, @RequestParam String lastName){
         List<InmateNoID> inmates = inmateNoIDRepository.findByFirstNameAndLastName(firstName, lastName);
         return ResponseEntity.ok(inmates);
     }
 
+
+    @GetMapping(path="/getInmateNoIDByDatabaseID")
+    public ResponseEntity<InmateNoID> getInmateNoIDByDatabaseID(@RequestParam long id){
+        Optional<InmateNoID> optional = inmateNoIDRepository.findById(id);
+        if(optional.isPresent()){
+            InmateNoID inmateNoID = optional.get();
+            return ResponseEntity.ok(inmateNoID);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(path="/addPackageInmateNoID")
+    public ResponseEntity<Package> addPackageForInmateNoID(@RequestParam long id, @RequestBody Package packageForInmate){
+        Optional<InmateNoID> optional = inmateNoIDRepository.findById(id);
+        if (optional.isPresent()){
+            InmateNoID inmateNoID = optional.get();
+            List<Package> packages = inmateNoID.getPackages();
+            packages.add(packageForInmate);
+            inmateNoID.setPackages(packages);
+            inmateNoIDRepository.save(inmateNoID);
+            return ResponseEntity.ok(packageForInmate);
+        }
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
 
 }
