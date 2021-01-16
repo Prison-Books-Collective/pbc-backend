@@ -74,8 +74,8 @@ public class InmateController {
             return ResponseEntity.ok(save);
         }
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
-
     }
+
     @PostMapping(path="/addPackage")
     public ResponseEntity<Package> addPackageForInmate(@RequestParam String id, @RequestBody Package packageForInmate){
         ResponseEntity<Inmate> inmateEntity = getInmate(id);
