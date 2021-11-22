@@ -1,17 +1,17 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
+import com.prisonbooks.PrisonBooksCollective.model.Inmate;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -47,5 +47,15 @@ public class PackageController {
         return ResponseEntity.ok(packages);
     }
 
+    @PutMapping(path = "/updatePackage")
+    public ResponseEntity<Package> updatePackage(@RequestBody Package updatedPackage){
+        Optional<Package> optionalPackage = packageRepository.findById(updatedPackage.getId());
+        if (optionalPackage.isPresent()){
+            Package originalPackage = updatedPackage;
 
+            Package save = packageRepository.save(originalPackage);
+            return ResponseEntity.ok(save);
+        }
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
 }

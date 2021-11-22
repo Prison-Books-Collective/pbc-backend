@@ -106,21 +106,21 @@ public class InmateController {
         }
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
-
-    @PutMapping(path="/updatePackage")
-    public ResponseEntity<List<Package>> updatePackage(@RequestParam  String inmateId,  @RequestBody Package packageItem) {
-        Optional<Inmate> optional = inmateRepository.findById(inmateId);
-        if (optional.isPresent()) {
-            Inmate inmate = optional.get();
-            List<Package> packages = inmate.getPackages();
-            for (int i = 0; i < packages.size(); i++) {
-                if (packages.get(i).getId() == packageItem.getId()) {
-                    packages.set(i, packageItem);
-                }
-            }
-            Inmate save = inmateRepository.save(inmate);
-            return ResponseEntity.ok(save.getPackages());
-        }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-    }
+//
+//    @PutMapping(path="/updatePackage")
+//    public ResponseEntity<List<Package>> updatePackage(@RequestParam  String inmateId,  @RequestBody Package packageItem) {
+//        Optional<Inmate> optional = inmateRepository.findById(inmateId);
+//        if (optional.isPresent()) {
+//            Inmate inmate = optional.get();
+//            List<Package> packages = inmate.getPackages();
+//            for (int i = 0; i < packages.size(); i++) {
+//                if (packages.get(i).getId() == packageItem.getId()) {
+//                    packages.set(i, packageItem);
+//                }
+//            }
+//            Inmate save = inmateRepository.save(inmate);
+//            return ResponseEntity.ok(save.getPackages());
+//        }
+//        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+//    }
 }
