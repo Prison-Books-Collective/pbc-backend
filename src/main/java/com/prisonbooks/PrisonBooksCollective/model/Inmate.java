@@ -1,5 +1,8 @@
 package com.prisonbooks.PrisonBooksCollective.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,7 +21,8 @@ public class Inmate {
 
     private String middleInitial;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToMany(mappedBy="inmate", cascade = CascadeType.REMOVE)
     private List<Package> packages;
 
     public String getMiddleInitial() {

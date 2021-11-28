@@ -41,16 +41,6 @@ public class InmateController {
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(path="/getPackages")
-    public ResponseEntity<List<Package>> getPackagesForInmate(@RequestParam String id){
-        ResponseEntity<Inmate> inmateEntity = getInmate(id);
-        if(inmateEntity.hasBody()){
-            Inmate inmate = inmateEntity.getBody();
-            return ResponseEntity.ok(inmate.getPackages());
-        }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
-    }
-
     @PutMapping(path = "/updateInmate")
     public ResponseEntity<Inmate> updateInmate(@RequestParam String originalId, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String id){
         Optional<Inmate> originalInmate = inmateRepository.findById(originalId);
@@ -76,51 +66,4 @@ public class InmateController {
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(path="/addPackage")
-    public ResponseEntity<Package> addPackageForInmate(@RequestParam String id, @RequestBody Package packageForInmate){
-        Optional<Inmate> optional = inmateRepository.findById(id);
-        if(optional.isPresent()){
-            Inmate inmate = optional.get();
-            List<Package> packages = inmate.getPackages();
-            packages.add(packageForInmate);
-            inmate.setPackages(packages);
-            inmateRepository.save(inmate);
-            return ResponseEntity.ok(packageForInmate);
-        }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
-    }
-
-    @PutMapping(path="/deletePackage")
-    public ResponseEntity<List<Package>> deletePackage(@RequestParam  String inmateId,  @RequestParam long packageId){
-        Optional<Inmate> optional = inmateRepository.findById(inmateId);
-        if (optional.isPresent()){
-            Inmate inmate = optional.get();
-            List<Package> packages =  inmate.getPackages();
-            for(int i = 0; i < packages.size(); i++){
-                if  (packages.get(i).getId() == packageId){
-                    packages.remove(i);
-                }
-            }
-            Inmate save = inmateRepository.save(inmate);
-            return ResponseEntity.ok(save.getPackages());
-        }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-    }
-//
-//    @PutMapping(path="/updatePackage")
-//    public ResponseEntity<List<Package>> updatePackage(@RequestParam  String inmateId,  @RequestBody Package packageItem) {
-//        Optional<Inmate> optional = inmateRepository.findById(inmateId);
-//        if (optional.isPresent()) {
-//            Inmate inmate = optional.get();
-//            List<Package> packages = inmate.getPackages();
-//            for (int i = 0; i < packages.size(); i++) {
-//                if (packages.get(i).getId() == packageItem.getId()) {
-//                    packages.set(i, packageItem);
-//                }
-//            }
-//            Inmate save = inmateRepository.save(inmate);
-//            return ResponseEntity.ok(save.getPackages());
-//        }
-//        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-//    }
 }

@@ -47,6 +47,22 @@ public class PackageController {
         return ResponseEntity.ok(packages);
     }
 
+    @GetMapping(path="/getPackagesForInmate")
+    public ResponseEntity<List<Package>> getPackagesForInmate(@RequestParam String inmateId) {
+
+        List<Package> allByInmateId = packageRepository.findAllByInmateId(inmateId);
+
+        return ResponseEntity.ok(allByInmateId);
+    }
+
+    @GetMapping(path="/getPackagesForInmateNoId")
+    public ResponseEntity<List<Package>> getPackagesForInmate(@RequestParam long inmateId) {
+
+        List<Package> allByInmateNoId = packageRepository.findAllByInmateNoId(inmateId);
+
+        return ResponseEntity.ok(allByInmateNoId);
+    }
+
     @PutMapping(path = "/updatePackage")
     public ResponseEntity<Package> updatePackage(@RequestBody Package updatedPackage){
         Optional<Package> optionalPackage = packageRepository.findById(updatedPackage.getId());
@@ -57,5 +73,21 @@ public class PackageController {
             return ResponseEntity.ok(save);
         }
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(path="/addPackage")
+    public ResponseEntity<Package> addPackage(@RequestBody Package packageForInmate){
+        Package savedPackage = packageRepository.save(packageForInmate);
+        return ResponseEntity.ok(savedPackage);
+    }
+
+    @DeleteMapping(path = "/deletePackage")
+    public HttpStatus deletePackage(@RequestParam long packageId){
+        packageRepository.deleteById(packageId);
+        if (packageRepository.findById(packageId).isPresent()){
+            return HttpStatus.EXPECTATION_FAILED;
+        }else {
+            return HttpStatus.OK;
+        }
     }
 }

@@ -6,6 +6,11 @@ import java.util.List;
 @Entity
 public class Book {
 
+
+    public Book(){
+
+    }
+
     @Id
     @GeneratedValue
     private long id;

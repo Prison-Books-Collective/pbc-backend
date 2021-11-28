@@ -1,5 +1,8 @@
 package com.prisonbooks.PrisonBooksCollective.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -20,9 +23,36 @@ public class Package {
     @ManyToMany
     private List<NoISBNBook> noISBNBooks;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @JsonManagedReference
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="inmate_id")
+    private Inmate inmate;
+
+    @JsonManagedReference
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="inmate_no_id_id")
+    private InmateNoID inmateNoId;
+
+    public Inmate getInmate() {
+        return inmate;
+    }
+
+    public InmateNoID getInmateNoId() {
+        return inmateNoId;
+    }
+
+    public void setInmate(Inmate inmate) {
+        this.inmate = inmate;
+    }
+
+    public void setInmateNoId(InmateNoID inmateNoId) {
+        this.inmateNoId = inmateNoId;
+    }
 
     public LocalDate getDate() {
         return date;
