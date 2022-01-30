@@ -35,8 +35,19 @@ public class Package {
     @JsonManagedReference
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="inmate_no_id_id")
+    @JoinColumn(name="inmate_noid_id")
     private InmateNoID inmateNoId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Alert alert;
+
+    public Alert getAlert() {
+        return alert;
+    }
+
+    public void setAlert(Alert alert) {
+        this.alert = alert;
+    }
 
     public Inmate getInmate() {
         return inmate;
