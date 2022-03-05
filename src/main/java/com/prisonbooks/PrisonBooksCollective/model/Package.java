@@ -41,6 +41,19 @@ public class Package {
     @OneToOne(cascade = CascadeType.ALL)
     private Alert alert;
 
+    @ManyToOne
+    @JoinColumn(name="facility_id")
+    private Facility facility;
+
+
+    public Facility getFacility() {
+        return facility;
+    }
+
+    public void setFacility(Facility facility) {
+        this.facility = facility;
+    }
+
     public Alert getAlert() {
         return alert;
     }
