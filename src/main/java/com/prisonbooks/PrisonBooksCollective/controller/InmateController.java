@@ -1,7 +1,6 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
 import com.prisonbooks.PrisonBooksCollective.model.Inmate;
-import com.prisonbooks.PrisonBooksCollective.model.InmateNoID;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
