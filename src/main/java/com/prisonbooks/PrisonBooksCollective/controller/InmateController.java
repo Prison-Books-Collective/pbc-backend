@@ -1,6 +1,7 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
 import com.prisonbooks.PrisonBooksCollective.model.Inmate;
+import com.prisonbooks.PrisonBooksCollective.model.InmateNoID;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,12 @@ public class InmateController {
             return ResponseEntity.ok(inmate.get());
         }
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path="/searchInmatesByName")
+    public ResponseEntity<List<Inmate>> getInmateByName(@RequestParam String firstName, @RequestParam String lastName){
+        List<Inmate> inmates = inmateRepository.findByFirstNameAndLastName(firstName, lastName);
+        return ResponseEntity.ok(inmates);
     }
 
     @PutMapping(path = "/updateInmate")
