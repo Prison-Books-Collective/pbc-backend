@@ -24,6 +24,13 @@ public class PackageController {
         this.packageRepository = packageRepository;
     }
 
+    @GetMapping(path="/getPackageById")
+    public ResponseEntity<Package> getPackageById(@RequestParam long id) {
+        return packageRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity(null, HttpStatus.NO_CONTENT));
+    }
+
     @GetMapping(path="/getPackagesFromDate")
     public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
         LocalDate dateObj = LocalDate.parse(date);
