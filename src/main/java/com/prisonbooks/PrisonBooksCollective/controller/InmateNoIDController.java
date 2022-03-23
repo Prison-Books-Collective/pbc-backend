@@ -64,4 +64,30 @@ public class InmateNoIDController {
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping(path = "/updateInmateNoID")
+    public ResponseEntity<InmateNoID> updateInmateNoID(@RequestParam long originalId, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String location, @RequestParam long id){
+        Optional<InmateNoID> originalInmate = inmateNoIDRepository.findById(originalId);
+        if (originalInmate.isPresent()){
+            InmateNoID inmate = originalInmate.get();
+            inmate.setFirstName(firstName);
+            inmate.setLastName(lastName);
+            inmate.setLocation(location);
+            if (id != originalId){
+                InmateNoID toClear = originalInmate.get();
+                List<Package> packages = List.copyOf(toClear.getPackages());
+                toClear.setPackages(new LinkedList<>());
+                inmateNoIDRepository.save(toClear);
+                inmateNoIDRepository.deleteById(originalId);
+                inmate.setId(id);
+                inmate.setPackages(packages);
+                InmateNoID save = inmateNoIDRepository.save(inmate);
+                return ResponseEntity.ok(save);
+            }
+
+            InmateNoID save = inmateNoIDRepository.save(inmate);
+            return ResponseEntity.ok(save);
+        }
+        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+    }
+
 }
