@@ -41,6 +41,12 @@ public class InmateController {
         return new ResponseEntity(null, HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping(path="/searchInmatesByName")
+    public ResponseEntity<List<Inmate>> getInmateByName(@RequestParam String firstName, @RequestParam String lastName){
+        List<Inmate> inmates = inmateRepository.findByFirstNameAndLastName(firstName, lastName);
+        return ResponseEntity.ok(inmates);
+    }
+
     @PutMapping(path = "/updateInmate")
     public ResponseEntity<Inmate> updateInmate(@RequestParam String originalId, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String id){
         Optional<Inmate> originalInmate = inmateRepository.findById(originalId);
