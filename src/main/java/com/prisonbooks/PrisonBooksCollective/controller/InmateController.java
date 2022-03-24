@@ -2,6 +2,7 @@ package com.prisonbooks.PrisonBooksCollective.controller;
 
 import com.prisonbooks.PrisonBooksCollective.model.Inmate;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +43,28 @@ public class InmateController {
     }
 
     @GetMapping(path="/searchInmatesByName")
-    public ResponseEntity<List<Inmate>> getInmateByName(@RequestParam String firstName, @RequestParam String lastName){
-        List<Inmate> inmates = inmateRepository.findByFirstNameAndLastName(firstName, lastName);
-        return ResponseEntity.ok(inmates);
+    public ResponseEntity<List<Inmate>> getInmateByName(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName
+    ){
+        if(Strings.isBlank(firstName) && Strings.isBlank(lastName)) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        if(Strings.isNotBlank(firstName) && Strings.isNotBlank(lastName)) {
+            List<Inmate> inmates = inmateRepository.findByPartialFullName(firstName, lastName);
+            return inmates.isEmpty()
+                    ? new ResponseEntity(null, HttpStatus.NO_CONTENT)
+                    : ResponseEntity.ok(inmates);
+        }
+
+        List<Inmate> inmates = Strings.isNotBlank(firstName)
+                ? inmateRepository.findByPartialFirstName(firstName)
+                : inmateRepository.findByPartialLastName(lastName);
+
+        return inmates.isEmpty()
+                ? new ResponseEntity(null, HttpStatus.NO_CONTENT)
+                : ResponseEntity.ok(inmates);
     }
 
     @PutMapping(path = "/updateInmate")
