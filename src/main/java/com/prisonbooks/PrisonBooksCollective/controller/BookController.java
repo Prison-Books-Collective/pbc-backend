@@ -99,12 +99,12 @@ public class BookController {
     public ResponseEntity<Book> updateBook(@RequestBody Book book){
         Book savedBook;
         Book originalBook;
-        if (book.getIsbn10().substring(0,2).equals("NO")){
+        if (book.getIsbn10().startsWith("NO")){
             Optional<Book> byIsbn13 = bookRepository.findByIsbn13(book.getIsbn13());
-            originalBook = byIsbn13.get();
+            originalBook = byIsbn13.orElseThrow();
         }else{
             Optional<Book> byIsbn10 = bookRepository.findByIsbn10(book.getIsbn10());
-            originalBook = byIsbn10.get();
+            originalBook = byIsbn10.orElseThrow();
         }
         originalBook.setAuthors(book.getAuthors());
         originalBook.setTitle(book.getTitle());
