@@ -35,6 +35,6 @@ public class NoISBNBookController {
             NoISBNBook save = noISBNBookRepository.save(actual);
             return ResponseEntity.ok(save);
         }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

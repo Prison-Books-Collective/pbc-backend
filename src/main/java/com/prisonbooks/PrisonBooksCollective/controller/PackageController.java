@@ -28,7 +28,7 @@ public class PackageController {
     public ResponseEntity<Package> getPackageById(@RequestParam long id) {
         return packageRepository.findById(id)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity(null, HttpStatus.NO_CONTENT));
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping(path="/getPackagesFromDate")
@@ -79,7 +79,7 @@ public class PackageController {
             Package save = packageRepository.save(originalPackage);
             return ResponseEntity.ok(save);
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path="/addPackage")

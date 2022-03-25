@@ -30,7 +30,7 @@ public class BookController {
             Book bookSaved = bookRepository.save(book);
             return ResponseEntity.ok(bookSaved);
         }
-        return new ResponseEntity(null, HttpStatus.FOUND);
+        return ResponseEntity.status(HttpStatus.FOUND).build();
     }
 
     @GetMapping(path="/getIsbn13StartsWith")
@@ -51,7 +51,7 @@ public class BookController {
         if(bookResult.isPresent()){
             return ResponseEntity.ok(bookResult.get());
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(path="/getIsbn13")
@@ -60,7 +60,7 @@ public class BookController {
         if(bookResult.isPresent()){
             return ResponseEntity.ok(bookResult.get());
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(path = "/deleteBook")
@@ -82,7 +82,7 @@ public class BookController {
             Book savedBook = bookRepository.save(book);
             return  ResponseEntity.ok(savedBook);
         } else {
-            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -95,7 +95,7 @@ public class BookController {
             Book savedBook = bookRepository.save(book);
             return  ResponseEntity.ok(savedBook);
         } else {
-            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         }
     }
 

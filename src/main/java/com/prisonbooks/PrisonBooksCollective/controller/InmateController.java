@@ -38,7 +38,7 @@ public class InmateController {
         if (inmate.isPresent()){
             return ResponseEntity.ok(inmate.get());
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(path="/searchInmatesByName")
@@ -69,7 +69,7 @@ public class InmateController {
             Inmate save = inmateRepository.save(inmate);
             return ResponseEntity.ok(save);
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }

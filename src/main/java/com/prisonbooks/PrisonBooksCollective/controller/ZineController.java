@@ -43,7 +43,7 @@ public class ZineController {
         if (zine.isPresent()){
             return  ResponseEntity.ok(zine.get());
         }else{
-            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         }
     }
 
@@ -58,6 +58,6 @@ public class ZineController {
             Zine save = zineRepository.save(actual);
             return ResponseEntity.ok(save);
         }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

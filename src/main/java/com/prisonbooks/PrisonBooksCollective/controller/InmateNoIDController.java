@@ -47,7 +47,7 @@ public class InmateNoIDController {
             InmateNoID inmateNoID = optional.get();
             return ResponseEntity.ok(inmateNoID);
         }
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path="/addPackageInmateNoID")
@@ -61,7 +61,7 @@ public class InmateNoIDController {
             inmateNoIDRepository.save(inmateNoID);
             return ResponseEntity.ok(packageForInmate);
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "/updateInmateNoID")
@@ -87,7 +87,7 @@ public class InmateNoIDController {
             InmateNoID save = inmateNoIDRepository.save(inmate);
             return ResponseEntity.ok(save);
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }
