@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ZineController {
 
     @Autowired
-    ZineRepository zineRepository;
+    final ZineRepository zineRepository;
 
     @Autowired
     public ZineController(@Autowired ZineRepository zineRepository){

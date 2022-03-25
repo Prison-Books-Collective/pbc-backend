@@ -14,7 +14,7 @@ import java.util.Optional;
 public class BookController {
 
     @Autowired
-    BookRepository bookRepository;
+    final BookRepository bookRepository;
 
     public BookController(@Autowired BookRepository bookRepository){
         this.bookRepository = bookRepository;

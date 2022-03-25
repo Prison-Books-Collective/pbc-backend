@@ -15,7 +15,7 @@ import java.util.Optional;
 public class InmateNoIDController {
 
     @Autowired
-    private InmateNoIDRepository inmateNoIDRepository;
+    private final InmateNoIDRepository inmateNoIDRepository;
 
     public InmateNoIDController(@Autowired InmateNoIDRepository inmateNoIDRepository){
         this.inmateNoIDRepository = inmateNoIDRepository;

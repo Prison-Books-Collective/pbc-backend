@@ -12,7 +12,7 @@ import java.util.Optional;
 public class NoISBNBookController {
 
     @Autowired
-    NoISBNBookRepository noISBNBookRepository;
+    final NoISBNBookRepository noISBNBookRepository;
 
     public NoISBNBookController(@Autowired NoISBNBookRepository noISBNBookRepository){
         this.noISBNBookRepository = noISBNBookRepository;

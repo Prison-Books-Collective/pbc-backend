@@ -15,7 +15,7 @@ import java.util.Optional;
 public class InmateController {
 
     @Autowired
-    private InmateRepository inmateRepository;
+    private final InmateRepository inmateRepository;
 
     public InmateController(@Autowired InmateRepository inmateRepository){
         this.inmateRepository = inmateRepository;

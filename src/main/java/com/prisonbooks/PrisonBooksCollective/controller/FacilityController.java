@@ -14,7 +14,7 @@ import java.util.List;
 public class FacilityController {
 
     @Autowired
-    FacilityRepository facilityRepository;
+    final FacilityRepository facilityRepository;
 
     public FacilityController(@Autowired FacilityRepository facilityRepository){
         this.facilityRepository = facilityRepository;

@@ -16,7 +16,7 @@ import java.util.Optional;
 public class PackageController {
 
     @Autowired
-    PackageRepository packageRepository;
+    final PackageRepository packageRepository;
 
     public PackageController(@Autowired PackageRepository packageRepository){
         this.packageRepository = packageRepository;
