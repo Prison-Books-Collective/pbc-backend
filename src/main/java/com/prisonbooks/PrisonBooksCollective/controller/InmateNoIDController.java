@@ -40,13 +40,13 @@ public class InmateNoIDController {
             @RequestParam(required = false) String lastName
     ){
         if(Strings.isBlank(firstName) && Strings.isBlank(lastName)) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
 
         if(Strings.isNotBlank(firstName) && Strings.isNotBlank(lastName)) {
             List<InmateNoID> inmates = inmateNoIDRepository.findByPartialFullName(firstName, lastName);
             return inmates.isEmpty()
-                    ? new ResponseEntity(null, HttpStatus.NO_CONTENT)
+                    ? ResponseEntity.noContent().build()
                     : ResponseEntity.ok(inmates);
         }
 
@@ -55,7 +55,7 @@ public class InmateNoIDController {
                 : inmateNoIDRepository.findByPartialLastName(lastName);
 
         return inmates.isEmpty()
-                ? new ResponseEntity(null, HttpStatus.NO_CONTENT)
+                ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(inmates);
     }
 
@@ -81,7 +81,7 @@ public class InmateNoIDController {
             inmateNoIDRepository.save(inmateNoID);
             return ResponseEntity.ok(packageForInmate);
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "/updateInmateNoID")
@@ -107,7 +107,7 @@ public class InmateNoIDController {
             InmateNoID save = inmateNoIDRepository.save(inmate);
             return ResponseEntity.ok(save);
         }
-        return new ResponseEntity(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }

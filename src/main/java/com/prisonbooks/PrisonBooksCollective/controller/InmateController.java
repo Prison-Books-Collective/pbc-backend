@@ -48,13 +48,13 @@ public class InmateController {
             @RequestParam(required = false) String lastName
     ){
         if(Strings.isBlank(firstName) && Strings.isBlank(lastName)) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
 
         if(Strings.isNotBlank(firstName) && Strings.isNotBlank(lastName)) {
             List<Inmate> inmates = inmateRepository.findByPartialFullName(firstName, lastName);
             return inmates.isEmpty()
-                    ? new ResponseEntity(null, HttpStatus.NO_CONTENT)
+                    ? ResponseEntity.noContent().build()
                     : ResponseEntity.ok(inmates);
         }
 
@@ -63,7 +63,7 @@ public class InmateController {
                 : inmateRepository.findByPartialLastName(lastName);
 
         return inmates.isEmpty()
-                ? new ResponseEntity(null, HttpStatus.NO_CONTENT)
+                ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(inmates);
     }
 
