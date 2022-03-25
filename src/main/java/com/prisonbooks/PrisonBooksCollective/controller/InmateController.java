@@ -34,11 +34,9 @@ public class InmateController {
 
     @GetMapping(path="/getInmate")
     public ResponseEntity<Inmate> getInmate(@RequestParam String id){
-        Optional<Inmate> inmate = inmateRepository.findById(id);
-        if (inmate.isPresent()){
-            return ResponseEntity.ok(inmate.get());
-        }
-        return ResponseEntity.noContent().build();
+        return inmateRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping(path="/searchInmatesByName")

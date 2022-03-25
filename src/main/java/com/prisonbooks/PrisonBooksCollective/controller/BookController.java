@@ -47,20 +47,16 @@ public class BookController {
 
     @GetMapping(path="/getIsbn10")
     public ResponseEntity<Book> getBookIsbn10(@RequestParam String isbn10){
-        Optional<Book> bookResult = bookRepository.findByIsbn10(isbn10);
-        if(bookResult.isPresent()){
-            return ResponseEntity.ok(bookResult.get());
-        }
-        return ResponseEntity.noContent().build();
+        return bookRepository.findByIsbn10(isbn10)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @GetMapping(path="/getIsbn13")
     public ResponseEntity<Book> getBookIsbn13(@RequestParam String isbn13){
-        Optional<Book> bookResult = bookRepository.findByIsbn13(isbn13);
-        if(bookResult.isPresent()){
-            return ResponseEntity.ok(bookResult.get());
-        }
-        return ResponseEntity.noContent().build();
+        return bookRepository.findByIsbn13(isbn13)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @DeleteMapping(path = "/deleteBook")

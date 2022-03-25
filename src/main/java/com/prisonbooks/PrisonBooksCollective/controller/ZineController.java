@@ -39,12 +39,9 @@ public class ZineController {
 
     @GetMapping(path="/getZine")
     public ResponseEntity<Zine> getZineByThreeLetterCode(@RequestParam String threeLetterCode){
-        Optional<Zine> zine = zineRepository.findByThreeLetterCode(threeLetterCode);
-        if (zine.isPresent()){
-            return  ResponseEntity.ok(zine.get());
-        }else{
-            return ResponseEntity.noContent().build();
-        }
+        return zineRepository.findByThreeLetterCode(threeLetterCode)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
 
