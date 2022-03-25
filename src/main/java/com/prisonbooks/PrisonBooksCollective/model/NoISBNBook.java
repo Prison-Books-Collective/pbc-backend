@@ -1,6 +1,9 @@
 package com.prisonbooks.PrisonBooksCollective.model;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
