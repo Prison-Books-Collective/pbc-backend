@@ -72,9 +72,7 @@ public class PackageController {
     public ResponseEntity<Package> updatePackage(@RequestBody Package updatedPackage){
         Optional<Package> optionalPackage = packageRepository.findById(updatedPackage.getId());
         if (optionalPackage.isPresent()){
-            Package originalPackage = updatedPackage;
-
-            Package save = packageRepository.save(originalPackage);
+            Package save = packageRepository.save(updatedPackage);
             return ResponseEntity.ok(save);
         }
         return ResponseEntity.noContent().build();
