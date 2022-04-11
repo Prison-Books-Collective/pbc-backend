@@ -36,7 +36,7 @@ public class PackageController {
     /**
      * Date is expected to be in format 'yyyy-mm-dd'
      */
-    @GetMapping(path="/getPackagesFromDate")
+    @GetMapping(path = "/getPackagesFromDate")
     public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
         try {
             LocalDate dateObj = LocalDate.parse(date);
@@ -47,7 +47,7 @@ public class PackageController {
             return packages.isEmpty()
                     ? ResponseEntity.noContent().build()
                     : ResponseEntity.ok(packages);
-        } catch(DateTimeParseException e) {
+        } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -55,18 +55,18 @@ public class PackageController {
     /**
      * Dates are expected to be in format 'yyyy-mm-dd'
      */
-    @GetMapping(path="/getPackagesBetweenDates")
+    @GetMapping(path = "/getPackagesBetweenDates")
     public ResponseEntity<List<Package>> getPackagesBetweenDates(@RequestParam String startDate, @RequestParam String endDate) {
         try {
             LocalDate startDateObj = LocalDate.parse(startDate), endDateObj = LocalDate.parse(endDate);
             List<Package> packages = packageRepository.findAllBetweenDates(startDateObj, endDateObj)
                     .stream()
                     .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
-                    .collect(Collectors.toList());;
+                    .collect(Collectors.toList());
             return packages.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(packages);
-        } catch(DateTimeParseException e) {
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(packages);
+        } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().build();
         }
     }
