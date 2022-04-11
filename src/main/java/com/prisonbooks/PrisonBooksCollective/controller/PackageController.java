@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -31,11 +32,42 @@ public class PackageController {
                 .orElseGet(() -> new ResponseEntity(null, HttpStatus.NO_CONTENT));
     }
 
+    /**
+     * Date is expected to be in format 'yyyy-mm-dd'
+     */
     @GetMapping(path="/getPackagesFromDate")
     public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
-        LocalDate dateObj = LocalDate.parse(date);
-        List<Package> byDate = packageRepository.findAllByDate(dateObj);
-        return ResponseEntity.ok(byDate);
+        try {
+            LocalDate dateObj = LocalDate.parse(date);
+            List<Package> byDate = packageRepository.findAllByDate(dateObj)
+                    .stream()
+                    .filter(x -> x.getInmate() != null || x.getInmateNoId() != null)
+                    .collect(Collectors.toList());
+            return byDate.isEmpty()
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(byDate);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Dates are expected to be in format 'yyyy-mm-dd'
+     */
+    @GetMapping(path="/getPackagesBetweenDates")
+    public ResponseEntity<List<Package>> getPackagesBetweenDates(@RequestParam String startDate, @RequestParam String endDate) {
+        try {
+            LocalDate startDateD = LocalDate.parse(startDate), endDateD = LocalDate.parse(endDate);
+            List<Package> packages = packageRepository.findAllBetweenDates(startDateD, endDateD)
+                    .stream()
+                    .filter(x -> x.getInmate() != null || x.getInmateNoId() != null)
+                    .collect(Collectors.toList());;
+            return packages.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(packages);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(path="/getPackageCountFromDate")
