@@ -39,13 +39,13 @@ public class PackageController {
     public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
         try {
             LocalDate dateObj = LocalDate.parse(date);
-            List<Package> byDate = packageRepository.findAllByDate(dateObj)
+            List<Package> packages = packageRepository.findAllByDate(dateObj)
                     .stream()
-                    .filter(x -> x.getInmate() != null || x.getInmateNoId() != null)
+                    .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
                     .collect(Collectors.toList());
-            return byDate.isEmpty()
+            return packages.isEmpty()
                     ? ResponseEntity.noContent().build()
-                    : ResponseEntity.ok(byDate);
+                    : ResponseEntity.ok(packages);
         } catch(Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -57,10 +57,10 @@ public class PackageController {
     @GetMapping(path="/getPackagesBetweenDates")
     public ResponseEntity<List<Package>> getPackagesBetweenDates(@RequestParam String startDate, @RequestParam String endDate) {
         try {
-            LocalDate startDateD = LocalDate.parse(startDate), endDateD = LocalDate.parse(endDate);
-            List<Package> packages = packageRepository.findAllBetweenDates(startDateD, endDateD)
+            LocalDate startDateObj = LocalDate.parse(startDate), endDateObj = LocalDate.parse(endDate);
+            List<Package> packages = packageRepository.findAllBetweenDates(startDateObj, endDateObj)
                     .stream()
-                    .filter(x -> x.getInmate() != null || x.getInmateNoId() != null)
+                    .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
                     .collect(Collectors.toList());;
             return packages.isEmpty()
                 ? ResponseEntity.noContent().build()
