@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class PackageController {
             return packages.isEmpty()
                     ? ResponseEntity.noContent().build()
                     : ResponseEntity.ok(packages);
-        } catch(Exception e) {
+        } catch(DateTimeParseException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -65,7 +66,7 @@ public class PackageController {
             return packages.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(packages);
-        } catch(Exception e) {
+        } catch(DateTimeParseException e) {
             return ResponseEntity.badRequest().build();
         }
     }
