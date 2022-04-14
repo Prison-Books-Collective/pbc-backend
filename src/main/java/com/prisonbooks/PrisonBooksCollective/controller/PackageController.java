@@ -1,6 +1,7 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
-import com.prisonbooks.PrisonBooksCollective.model.Inmate;
+import com.prisonbooks.PrisonBooksCollective.model.Book;
+import com.prisonbooks.PrisonBooksCollective.model.NoISBNBook;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +20,20 @@ public class PackageController {
     @Autowired
     PackageRepository packageRepository;
 
-    public PackageController(@Autowired PackageRepository packageRepository){
+    @Autowired
+    BookRepository bookRepository;
+
+    @Autowired
+    NoISBNBookRepository noISBNBookRepository;
+
+    public PackageController(
+            @Autowired PackageRepository packageRepository,
+            @Autowired BookRepository bookRepository,
+            @Autowired NoISBNBookRepository noISBNBookRepository
+    ){
         this.packageRepository = packageRepository;
+        this.bookRepository = bookRepository;
+        this.noISBNBookRepository = noISBNBookRepository;
     }
 
     @GetMapping(path="/getPackageById")
@@ -68,6 +80,46 @@ public class PackageController {
         List<Package> allByInmateNoId = packageRepository.findAllByInmateNoId(inmateId);
 
         return ResponseEntity.ok(allByInmateNoId);
+    }
+
+    @GetMapping(path="/getPackagesByISBN")
+    public ResponseEntity<List<Package>> getPackagesByISBN(@RequestParam String isbn) {
+        try {
+            if(isbn.length() != 10 && isbn.length() != 13) throw new NumberFormatException();
+            Long.parseLong(isbn);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Optional<Book> book = isbn.length() == 10
+                ? bookRepository.findByIsbn10(isbn)
+                : bookRepository.findByIsbn13(isbn);
+        if(book.isEmpty()) return ResponseEntity.noContent().build();
+
+        List<Package> packages = packageRepository.findAllByBooks(book.get());
+        return packages.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(packages);
+    }
+
+    @GetMapping(path="/getPackagesByAuthorAndTitle")
+    public ResponseEntity<List<Package>> getPackagesByAuthorAndTitle(
+            @RequestParam String author,
+            @RequestParam String title
+    ) {
+        Optional<NoISBNBook> noISBNBook = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
+        if(noISBNBook.isPresent()) {
+            List<Package> packages = packageRepository.findAllByNoISBNBooks(noISBNBook.get());
+            return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
+        }
+
+        Optional<Book> book = bookRepository.findByAuthorAndTitleContains(author, title);
+        if(book.isPresent()) {
+            List<Package> packages = packageRepository.findAllByBooks(book.get());
+            return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
+        }
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "/updatePackage")
