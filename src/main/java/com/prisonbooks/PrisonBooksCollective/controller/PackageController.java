@@ -82,10 +82,10 @@ public class PackageController {
         return ResponseEntity.ok(allByInmateNoId);
     }
 
-    @GetMapping(path="/getPackagesByISBN")
+    @GetMapping(path = "/getPackagesByISBN")
     public ResponseEntity<List<Package>> getPackagesByISBN(@RequestParam String isbn) {
         try {
-            if(isbn.length() != 10 && isbn.length() != 13) throw new NumberFormatException();
+            if (isbn.length() != 10 && isbn.length() != 13) throw new NumberFormatException();
             Long.parseLong(isbn);
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
@@ -94,7 +94,7 @@ public class PackageController {
         Optional<Book> book = isbn.length() == 10
                 ? bookRepository.findByIsbn10(isbn)
                 : bookRepository.findByIsbn13(isbn);
-        if(book.isEmpty()) return ResponseEntity.noContent().build();
+        if (book.isEmpty()) return ResponseEntity.noContent().build();
 
         List<Package> packages = packageRepository.findAllByBooks(book.get());
         return packages.isEmpty()
@@ -102,19 +102,19 @@ public class PackageController {
                 : ResponseEntity.ok(packages);
     }
 
-    @GetMapping(path="/getPackagesByAuthorAndTitle")
+    @GetMapping(path = "/getPackagesByAuthorAndTitle")
     public ResponseEntity<List<Package>> getPackagesByAuthorAndTitle(
             @RequestParam String author,
             @RequestParam String title
     ) {
         Optional<NoISBNBook> noISBNBook = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
-        if(noISBNBook.isPresent()) {
+        if (noISBNBook.isPresent()) {
             List<Package> packages = packageRepository.findAllByNoISBNBooks(noISBNBook.get());
             return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
         }
 
         Optional<Book> book = bookRepository.findByAuthorAndTitleContains(author, title);
-        if(book.isPresent()) {
+        if (book.isPresent()) {
             List<Package> packages = packageRepository.findAllByBooks(book.get());
             return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
         }
@@ -149,4 +149,5 @@ public class PackageController {
             return HttpStatus.OK;
         }
     }
+
 }
