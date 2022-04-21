@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class Package {
     /**
      * Removes packages that do not have any associated Inmate or InmateNoID
      */
-    public static List<Package> filterPackagesWithoutInmate(List<Package> packages) {
+    public static <T extends Collection<Package>> List<Package> filterPackagesWithoutInmate(T packages) {
         return packages.stream()
                 .filter(Package::hasInmate)
                 .collect(Collectors.toList());

@@ -26,4 +26,9 @@ public interface PackageRepository extends CrudRepository<Package, Long> {
 
     List<Package> findAllByNoISBNBooks(NoISBNBook book);
 
+    @Query("SELECT p FROM Package p JOIN p.books b JOIN b.authors a WHERE b.title LIKE CONCAT('%', :title,  '%') AND a LIKE CONCAT('%', :author, '%')")
+    List<Package> findAllByAuthorAndTitleContains(String author, String title);
+
+    @Query("SELECT p FROM Package p JOIN p.noISBNBooks b JOIN b.authors a WHERE b.title LIKE CONCAT('%', :title,  '%') AND a LIKE CONCAT('%', :author, '%')")
+    List<Package> findAllByNoISBNAuthorAndTitleContains(String author, String title);
 }

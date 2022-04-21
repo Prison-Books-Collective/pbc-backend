@@ -9,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
@@ -111,25 +109,16 @@ public class PackageController {
             @RequestParam String author,
             @RequestParam String title
     ) {
-        List<Package> allMatches = new ArrayList<>();
+        Set<Package> allMatches = new HashSet<>();
+        List<Package> bookMatches = packageRepository.findAllByAuthorAndTitleContains(author, title);
+        List<Package> noISBNMatches = packageRepository.findAllByNoISBNAuthorAndTitleContains(author, title);
 
-        List<NoISBNBook> noISBNBooks = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
-        if (!noISBNBooks.isEmpty()) {
-            for (NoISBNBook noISBNBook: noISBNBooks) {
-                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByNoISBNBooks(noISBNBook));
-                if(!packages.isEmpty()) allMatches.addAll(packages);
-            }
-        }
+        allMatches.addAll(bookMatches);
+        allMatches.addAll(noISBNMatches);
 
-        List<Book> books = bookRepository.findByAuthorAndTitleContains(author, title);
-        if (!books.isEmpty()) {
-            for (Book book: books) {
-                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByBooks(book));
-                if(!packages.isEmpty()) allMatches.addAll(packages);
-            }
-        }
+        List<Package> matches = filterPackagesWithoutInmate(allMatches);
 
-        return allMatches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(allMatches);
+        return matches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(matches);
     }
 
     @PutMapping(path = "/updatePackage")
