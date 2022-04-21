@@ -107,15 +107,15 @@ public class PackageController {
             @RequestParam String author,
             @RequestParam String title
     ) {
-        Optional<NoISBNBook> noISBNBook = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
-        if (noISBNBook.isPresent()) {
-            List<Package> packages = packageRepository.findAllByNoISBNBooks(noISBNBook.get());
+        List<NoISBNBook> noISBNBooks = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
+        if (!noISBNBooks.isEmpty()) {
+            List<Package> packages = packageRepository.findAllByNoISBNBooks(noISBNBooks.get(0));
             return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
         }
 
-        Optional<Book> book = bookRepository.findByAuthorAndTitleContains(author, title);
-        if (book.isPresent()) {
-            List<Package> packages = packageRepository.findAllByBooks(book.get());
+        List<Book> books = bookRepository.findByAuthorAndTitleContains(author, title);
+        if (!books.isEmpty()) {
+            List<Package> packages = packageRepository.findAllByBooks(books.get(0));
             return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
         }
 

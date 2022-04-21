@@ -14,7 +14,7 @@ public interface BookRepository extends CrudRepository<Book, Long> {
     Optional<Book> findByIsbn13(String isbn13);
 
     @Query("SELECT b FROM Book b join b.authors author WHERE authors LIKE CONCAT('%', :author, '%') AND b.title LIKE CONCAT('%', :title, '%')")
-    Optional<Book> findByAuthorAndTitleContains(String author, String title);
+    List<Book> findByAuthorAndTitleContains(String author, String title);
 
     List<Book> findByIsbn13StartsWith(String beginning);
 
