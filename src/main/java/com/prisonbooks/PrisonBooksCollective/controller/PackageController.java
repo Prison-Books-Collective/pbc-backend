@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -110,25 +111,25 @@ public class PackageController {
             @RequestParam String author,
             @RequestParam String title
     ) {
+        List<Package> allMatches = new ArrayList<>();
+
         List<NoISBNBook> noISBNBooks = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
         if (!noISBNBooks.isEmpty()) {
             for (NoISBNBook noISBNBook: noISBNBooks) {
-                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByNoISBNBooks(noISBNBooks.get(0)));
-                if(!packages.isEmpty()) return ResponseEntity.ok(packages);
+                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByNoISBNBooks(noISBNBook));
+                if(!packages.isEmpty()) allMatches.addAll(packages);
             }
-            return ResponseEntity.noContent().build();
         }
 
         List<Book> books = bookRepository.findByAuthorAndTitleContains(author, title);
         if (!books.isEmpty()) {
             for (Book book: books) {
-                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByBooks(books.get(0)));
-                if(!packages.isEmpty()) return ResponseEntity.ok(packages);
+                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByBooks(book));
+                if(!packages.isEmpty()) allMatches.addAll(packages);
             }
-            return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.noContent().build();
+        return allMatches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(allMatches);
     }
 
     @PutMapping(path = "/updatePackage")
