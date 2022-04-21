@@ -12,6 +12,9 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
 
 @CrossOrigin
 @RestController
@@ -109,14 +112,20 @@ public class PackageController {
     ) {
         List<NoISBNBook> noISBNBooks = noISBNBookRepository.findByAuthorAndTitleContains(author, title);
         if (!noISBNBooks.isEmpty()) {
-            List<Package> packages = packageRepository.findAllByNoISBNBooks(noISBNBooks.get(0));
-            return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
+            for (NoISBNBook noISBNBook: noISBNBooks) {
+                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByNoISBNBooks(noISBNBooks.get(0)));
+                if(!packages.isEmpty()) return ResponseEntity.ok(packages);
+            }
+            return ResponseEntity.noContent().build();
         }
 
         List<Book> books = bookRepository.findByAuthorAndTitleContains(author, title);
         if (!books.isEmpty()) {
-            List<Package> packages = packageRepository.findAllByBooks(books.get(0));
-            return packages.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(packages);
+            for (Book book: books) {
+                List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByBooks(books.get(0)));
+                if(!packages.isEmpty()) return ResponseEntity.ok(packages);
+            }
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.noContent().build();
@@ -149,5 +158,4 @@ public class PackageController {
             return HttpStatus.OK;
         }
     }
-
 }
