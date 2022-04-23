@@ -1,7 +1,5 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
-import com.prisonbooks.PrisonBooksCollective.model.Book;
-import com.prisonbooks.PrisonBooksCollective.model.NoISBNBook;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -22,7 +20,8 @@ public interface PackageRepository extends CrudRepository<Package, Long> {
     @Query("SELECT p FROM Package p WHERE p.inmateNoId.id = ?1")
     List<Package> findAllByInmateNoId(long inmateId);
 
-    List<Package> findAllByBooks(Book book);
+    @Query("SELECT p FROM Package p JOIN p.books b WHERE b.isbn10 = :isbn OR b.isbn13 = :isbn")
+    List<Package> findAllByISBN(String isbn);
 
     @Query("SELECT p FROM Package p JOIN p.books b JOIN b.authors a WHERE b.title LIKE CONCAT('%', :title,  '%') AND a LIKE CONCAT('%', :author, '%')")
     List<Package> findAllByAuthorAndTitleContains(String author, String title);

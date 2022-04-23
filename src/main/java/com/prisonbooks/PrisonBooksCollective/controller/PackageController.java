@@ -1,6 +1,5 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
-import com.prisonbooks.PrisonBooksCollective.model.Book;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
 
@@ -19,15 +21,8 @@ public class PackageController {
     @Autowired
     PackageRepository packageRepository;
 
-    @Autowired
-    BookRepository bookRepository;
-
-    public PackageController(
-            @Autowired PackageRepository packageRepository,
-            @Autowired BookRepository bookRepository
-    ){
+    public PackageController(@Autowired PackageRepository packageRepository) {
         this.packageRepository = packageRepository;
-        this.bookRepository = bookRepository;
     }
 
     @GetMapping(path="/getPackageById")
@@ -85,12 +80,7 @@ public class PackageController {
             return ResponseEntity.badRequest().build();
         }
 
-        Optional<Book> book = isbn.length() == 10
-                ? bookRepository.findByIsbn10(isbn)
-                : bookRepository.findByIsbn13(isbn);
-        if (book.isEmpty()) return ResponseEntity.noContent().build();
-
-        List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByBooks(book.get()));
+        List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByISBN(isbn));
         return packages.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(packages);
