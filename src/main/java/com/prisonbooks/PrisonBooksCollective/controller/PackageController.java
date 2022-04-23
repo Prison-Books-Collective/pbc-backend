@@ -98,12 +98,7 @@ public class PackageController {
                 : bookRepository.findByIsbn13(isbn);
         if (book.isEmpty()) return ResponseEntity.noContent().build();
 
-        List<Package> packages = packageRepository.findAllByBooks(book.get())
-                .stream()
-                .distinct()
-                .filter(Package::hasInmate)
-                .collect(Collectors.toList());
-
+        List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByBooks(book.get()));
         return packages.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(packages);

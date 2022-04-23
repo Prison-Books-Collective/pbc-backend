@@ -53,6 +53,7 @@ public class Package {
      */
     public static <T extends Collection<Package>> List<Package> filterPackagesWithoutInmate(T packages) {
         return packages.stream()
+                .distinct()
                 .filter(Package::hasInmate)
                 .collect(Collectors.toList());
     }
