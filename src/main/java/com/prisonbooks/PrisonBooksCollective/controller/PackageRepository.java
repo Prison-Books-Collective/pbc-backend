@@ -11,6 +11,9 @@ public interface PackageRepository extends CrudRepository<Package,Long> {
 
     List<Package> findAllByDate(LocalDate date);
 
+    @Query("SELECT p FROM Package p WHERE p.date BETWEEN :startDate AND :endDate")
+    List<Package> findAllBetweenDates(LocalDate startDate, LocalDate endDate);
+
     Long countByDate(LocalDate date);
 
     @Query("SELECT p FROM Package p WHERE p.inmate.id = ?1")
