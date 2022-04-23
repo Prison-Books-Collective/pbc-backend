@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
 
@@ -41,10 +40,7 @@ public class PackageController {
     public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
         try {
             LocalDate dateObj = LocalDate.parse(date);
-            List<Package> packages = packageRepository.findAllByDate(dateObj)
-                    .stream()
-                    .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
-                    .collect(Collectors.toList());
+            List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByDate(dateObj));
             return packages.isEmpty()
                     ? ResponseEntity.noContent().build()
                     : ResponseEntity.ok(packages);
@@ -60,10 +56,7 @@ public class PackageController {
     public ResponseEntity<List<Package>> getPackagesBetweenDates(@RequestParam String startDate, @RequestParam String endDate) {
         try {
             LocalDate startDateObj = LocalDate.parse(startDate), endDateObj = LocalDate.parse(endDate);
-            List<Package> packages = packageRepository.findAllBetweenDates(startDateObj, endDateObj)
-                    .stream()
-                    .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
-                    .collect(Collectors.toList());
+            List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllBetweenDates(startDateObj, endDateObj));
             return packages.isEmpty()
                     ? ResponseEntity.noContent().build()
                     : ResponseEntity.ok(packages);
