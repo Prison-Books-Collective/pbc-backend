@@ -22,17 +22,12 @@ public class PackageController {
     @Autowired
     BookRepository bookRepository;
 
-    @Autowired
-    NoISBNBookRepository noISBNBookRepository;
-
     public PackageController(
             @Autowired PackageRepository packageRepository,
-            @Autowired BookRepository bookRepository,
-            @Autowired NoISBNBookRepository noISBNBookRepository
+            @Autowired BookRepository bookRepository
     ){
         this.packageRepository = packageRepository;
         this.bookRepository = bookRepository;
-        this.noISBNBookRepository = noISBNBookRepository;
     }
 
     @GetMapping(path="/getPackageById")
@@ -106,14 +101,13 @@ public class PackageController {
             @RequestParam String author,
             @RequestParam String title
     ) {
-        Set<Package> allMatches = new HashSet<>();
         List<Package> bookMatches = packageRepository.findAllByAuthorAndTitleContains(author, title);
         List<Package> noISBNMatches = packageRepository.findAllByNoISBNAuthorAndTitleContains(author, title);
+        List<Package> matches = new ArrayList<>();
 
-        allMatches.addAll(bookMatches);
-        allMatches.addAll(noISBNMatches);
-
-        List<Package> matches = filterPackagesWithoutInmate(allMatches);
+        matches.addAll(bookMatches);
+        matches.addAll(noISBNMatches);
+        matches = filterPackagesWithoutInmate(matches);
 
         return matches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(matches);
     }
