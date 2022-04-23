@@ -21,7 +21,7 @@ public class PackageController {
     @Autowired
     PackageRepository packageRepository;
 
-    public PackageController(@Autowired PackageRepository packageRepository) {
+    public PackageController(@Autowired PackageRepository packageRepository){
         this.packageRepository = packageRepository;
     }
 
