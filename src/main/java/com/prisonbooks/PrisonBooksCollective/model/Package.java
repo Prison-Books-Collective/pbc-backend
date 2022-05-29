@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Package {
@@ -45,6 +47,16 @@ public class Package {
     @JoinColumn(name="facility_id")
     private Facility facility;
 
+
+    /**
+     * Removes packages that do not have any associated Inmate or InmateNoID
+     */
+    public static <T extends Collection<Package>> List<Package> filterPackagesWithoutInmate(T packages) {
+        return packages.stream()
+                .distinct()
+                .filter(Package::hasInmate)
+                .collect(Collectors.toList());
+    }
 
     public Facility getFacility() {
         return facility;
@@ -116,5 +128,9 @@ public class Package {
 
     public void setNoISBNBooks(List<NoISBNBook> noISBNBooks) {
         this.noISBNBooks = noISBNBooks;
+    }
+
+    public boolean hasInmate() {
+        return getInmate() != null || getInmateNoId() != null;
     }
 }

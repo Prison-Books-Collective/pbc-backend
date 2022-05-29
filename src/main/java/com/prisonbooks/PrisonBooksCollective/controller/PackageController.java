@@ -1,6 +1,5 @@
 package com.prisonbooks.PrisonBooksCollective.controller;
 
-import com.prisonbooks.PrisonBooksCollective.model.Inmate;
 import com.prisonbooks.PrisonBooksCollective.model.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,10 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
 
 @CrossOrigin
 @RestController
@@ -101,6 +103,37 @@ public class PackageController {
         List<Package> allByInmateNoId = packageRepository.findAllByInmateNoId(inmateId);
 
         return ResponseEntity.ok(allByInmateNoId);
+    }
+
+    @GetMapping(path = "/getPackagesByISBN")
+    public ResponseEntity<List<Package>> getPackagesByISBN(@RequestParam String isbn) {
+        try {
+            if (isbn.length() != 10 && isbn.length() != 13) throw new NumberFormatException();
+            Long.parseLong(isbn);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Package> packages = filterPackagesWithoutInmate(packageRepository.findAllByISBN(isbn));
+        return packages.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(packages);
+    }
+
+    @GetMapping(path = "/getPackagesByAuthorAndTitle")
+    public ResponseEntity<List<Package>> getPackagesByAuthorAndTitle(
+            @RequestParam String author,
+            @RequestParam String title
+    ) {
+        List<Package> bookMatches = packageRepository.findAllByAuthorAndTitleContains(author, title);
+        List<Package> noISBNMatches = packageRepository.findAllByNoISBNAuthorAndTitleContains(author, title);
+        List<Package> matches = new ArrayList<>();
+
+        matches.addAll(bookMatches);
+        matches.addAll(noISBNMatches);
+        matches = filterPackagesWithoutInmate(matches);
+
+        return matches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(matches);
     }
 
     @PutMapping(path = "/updatePackage")
