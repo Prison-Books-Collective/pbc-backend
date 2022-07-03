@@ -7,10 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
 
@@ -32,11 +35,42 @@ public class PackageController {
                 .orElseGet(() -> new ResponseEntity(null, HttpStatus.NO_CONTENT));
     }
 
-    @GetMapping(path="/getPackagesFromDate")
+    /**
+     * Date is expected to be in format 'yyyy-mm-dd'
+     */
+    @GetMapping(path = "/getPackagesFromDate")
     public ResponseEntity<List<Package>> getPackagesFromDate(@RequestParam String date) {
-        LocalDate dateObj = LocalDate.parse(date);
-        List<Package> byDate = packageRepository.findAllByDate(dateObj);
-        return ResponseEntity.ok(byDate);
+        try {
+            LocalDate dateObj = LocalDate.parse(date);
+            List<Package> packages = packageRepository.findAllByDate(dateObj)
+                    .stream()
+                    .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
+                    .collect(Collectors.toList());
+            return packages.isEmpty()
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(packages);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Dates are expected to be in format 'yyyy-mm-dd'
+     */
+    @GetMapping(path = "/getPackagesBetweenDates")
+    public ResponseEntity<List<Package>> getPackagesBetweenDates(@RequestParam String startDate, @RequestParam String endDate) {
+        try {
+            LocalDate startDateObj = LocalDate.parse(startDate), endDateObj = LocalDate.parse(endDate);
+            List<Package> packages = packageRepository.findAllBetweenDates(startDateObj, endDateObj)
+                    .stream()
+                    .filter(p -> p.getInmate() != null || p.getInmateNoId() != null)
+                    .collect(Collectors.toList());
+            return packages.isEmpty()
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(packages);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(path="/getPackageCountFromDate")
