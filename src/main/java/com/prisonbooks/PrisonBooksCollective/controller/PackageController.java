@@ -8,11 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.prisonbooks.PrisonBooksCollective.model.Package.filterPackagesWithoutInmate;
@@ -134,6 +130,15 @@ public class PackageController {
         matches = filterPackagesWithoutInmate(matches);
 
         return matches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(matches);
+    }
+
+    @GetMapping(path = "/getAllRejectedPackages")
+    public ResponseEntity<List<Package>> getAllRejectedPackages() {
+        // Just returns a generic 200 status with an empty list in the body. Will need to update to return a list of all rejected packages
+        // This may require creating a custom query in the PackageRepository
+        // If no rejected packages exist in the database, should return a 200 (ok) with an empty list in the body OR a 204 (no-content) status with no body
+        // (The OK:200 approach is likely more straightforward for both frontend and backend implementation)
+        return ResponseEntity.ok(List.of());
     }
 
     @PutMapping(path = "/updatePackage")
